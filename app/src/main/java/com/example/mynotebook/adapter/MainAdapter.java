@@ -45,19 +45,20 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> 
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
         private TextView textViewTitle;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.tvTitle);
         }
 
-        public void setData(String title){
+        public void setData(String title) {
             textViewTitle.setText(title);
         }
     }
 
     public void updateAdapter(List<String> newList) {
-    mainArray.clear();
-    mainArray.addAll(newList);
-    notifyDataSetChanged();
+        mainArray.clear();
+        mainArray.addAll(newList);
+        notifyDataSetChanged();
     }
 }
