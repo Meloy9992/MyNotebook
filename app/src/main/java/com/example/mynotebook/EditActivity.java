@@ -41,23 +41,28 @@ public class EditActivity extends AppCompatActivity {
         manager = new Manager(this);
     }
 
+    // ДЕЙСТВИЯ ПРИ НАЖАТИИ НА СОХРАНЕНИЕ
     public void onClickSave(View view) {
-        String title = editTitle.getText().toString();
-        String description = editDescription.getText().toString();
-        if (title.equals("") || description.equals("")) {
+        String title = editTitle.getText().toString(); //ПОЛУЧЕНИЕ ТЕКСТА ИЗ ЗАГОЛОВКА
+        String description = editDescription.getText().toString(); // ПОЛУЧЕНИЕ ТЕКСТА ИЗ ОПИСАНИЯ
+        if (title.equals("") || description.equals("")) { // ПРОВЕРКА НА ПУСТЫЕ СТРОКИ
             Toast.makeText(this, R.string.EmptyTitleOrDescription, Toast.LENGTH_SHORT).show();
         } else {
-            manager.insertToDb(title, description);
+            manager.insertToDb(title, description); // ВСТАВЛЯЕМ В БАЗУ ДАННЫХ ЗАГОЛОВОК И ОПИСАНИЕ
             Toast.makeText(this, R.string.Saved, Toast.LENGTH_SHORT).show();
-            finish(); //Закрытие активити
-            manager.closeDb();
+            finish(); //ЗАКРЫТИЕ АКТИВНОСТИ
+            manager.closeDb(); // ЗАКРЫТИЕ БАЗЫ ДАННЫХ
         }
     }
-    public void onClickDeleteImage(View view){
+
+    // ДЕЙСТВИЯ ПРИ НАЖАТИИ НА УДАЛЕНИЕ ИЗОБРАЖЕНИЯ
+    public void onClickDeleteImage(View view) {
         addNewImage.setVisibility(View.GONE);
         fbAddImage.setVisibility(View.VISIBLE);
     }
-    public void onClickAddNewImage(View view){
+
+    // ДЕЙСТВИЯ ПРИ НАЖАТИИ НА ДОБАВЛЕНИЕ НОВОЙ КАРТИНКИ
+    public void onClickAddNewImage(View view) {
         addNewImage.setVisibility(View.VISIBLE);
         view.setVisibility(View.GONE);
     }

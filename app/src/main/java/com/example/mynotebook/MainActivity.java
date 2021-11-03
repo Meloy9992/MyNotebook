@@ -15,12 +15,13 @@ import com.example.mynotebook.dataBase.Manager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Manager manager;
-    private EditText editTitle, editDescription;
-    private TextView textView;
-    private RecyclerView recyclerView;
-    private MainAdapter mainAdapter;
+    private Manager manager; // МЕНЕДЖЕР БАЗЫ ДАННЫХ
+    private EditText editTitle, editDescription; // ФОРМЫ ВВОДА ЗАГОЛОВКА И ТЕКСТА
+    private TextView textView; // ФОРМА ДЛЯ ОТОБРАЖЕНИЯ ЗАГОЛОВКОВ
+    private RecyclerView recyclerView; // СПИСОК ЗАГОЛОВКОВ
+    private MainAdapter mainAdapter; // АДАПТОР
 
+    // ВЫПОЛНИТЬ ДЕЙСТВИЯ ПРИ ОТКРЫТИИ ПРИЛОЖЕНИЯ
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mainAdapter);
     }
 
+    // ДЕЙСТВИЯ ПРИ ВОЗВРАТЕ В ПРОГРАММУ
     @Override
     public void onResume() {
         super.onResume();
@@ -47,14 +49,16 @@ public class MainActivity extends AppCompatActivity {
         mainAdapter.updateAdapter(manager.getFromDbTitle());
     }
 
+    // ДЕЙСТВИЯ КНОПКИ СОЗДАНИЯ НОВОЙ ЗАПИСИ
     public void OnClickAdd(View view) {
         Intent intent = new Intent(MainActivity.this, EditActivity.class); // переход на другой экран
         startActivity(intent); //запуск перехода
     }
 
+    // ДЕЙСТВИЯ ПРИ ЗАКРЫТИИ ПРИЛОЖЕНИЯ
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        manager.closeDb();
+        manager.closeDb(); // ЗАКРЫТЬ БАЗУ ДАННЫХ
     }
 }
