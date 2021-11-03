@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">My notebook</string>
+    <string name="EmptyTitleOrDescription">Заголовок или содержание не заполнены</string>
+    <string name="Saved">Ваша запись сохранена</string>
 </resources>
