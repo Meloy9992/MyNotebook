@@ -31,6 +31,7 @@ public class EditActivity extends AppCompatActivity {
     private boolean isEditState = true;
     //private ImageButton imEditImage, imDeleteImage;
 
+    // ПРИ СОЗДАНИИ АКТИВНОСТИ
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,12 +40,14 @@ public class EditActivity extends AppCompatActivity {
         getMyIntent();
     }
 
+    // ПРИ ВОЗВРАЩЕНИИ В АКТИВНОСТЬ
     @Override
     public void onResume() {
         super.onResume();
         manager.openDb();
     }
 
+    // ОСНОВНЫЕ КОМАНДЫ
     private void init() {
         editTitle = findViewById(R.id.Title);
         editDescription = findViewById(R.id.Description);
@@ -54,6 +57,7 @@ public class EditActivity extends AppCompatActivity {
         manager = new Manager(this);
     }
 
+    // ПОЛУЧЕНИЕ НАМЕРЕНИЯ
     private void getMyIntent() {
         Intent intent = getIntent();
         if (intent != null) {
@@ -61,8 +65,8 @@ public class EditActivity extends AppCompatActivity {
             isEditState = intent.getBooleanExtra(Constants.EDIT_STATE, true);
 
             if (!isEditState){
-                editTitle.setText(item.getTitle());
-                editDescription.setText(item.getDescription());
+                editTitle.setText(item.getTitle()); // ЗАДАТЬ ЗАГОЛОВОК
+                editDescription.setText(item.getDescription()); // ЗАДАТЬ ОПИСАНИЕ
             }
         }
     }
@@ -71,6 +75,7 @@ public class EditActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // ПОЛУЧЕНИЕ ССЫЛКИ НА КАРТИНКУ И УСТАНОВКА ССЫЛКИ В ПЕРЕМЕННУЮ
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_CODE && data != null) {
             tempUri = data.getData().toString();
             newImage.setImageURI(data.getData());
@@ -82,10 +87,10 @@ public class EditActivity extends AppCompatActivity {
         String title = editTitle.getText().toString(); //ПОЛУЧЕНИЕ ТЕКСТА ИЗ ЗАГОЛОВКА
         String description = editDescription.getText().toString(); // ПОЛУЧЕНИЕ ТЕКСТА ИЗ ОПИСАНИЯ
         if (title.equals("") || description.equals("")) { // ПРОВЕРКА НА ПУСТЫЕ СТРОКИ
-            Toast.makeText(this, R.string.EmptyTitleOrDescription, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.EmptyTitleOrDescription, Toast.LENGTH_SHORT).show(); // УВЕДОМЛЕНИЕ НА ЭКРАНЕ
         } else {
             manager.insertToDb(title, description, tempUri); // ВСТАВЛЯЕМ В БАЗУ ДАННЫХ ЗАГОЛОВОК И ОПИСАНИЕ
-            Toast.makeText(this, R.string.Saved, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.Saved, Toast.LENGTH_SHORT).show(); // УВЕДОМЛЕНИЕ НА ЭКРАНЕ
             finish(); //ЗАКРЫТИЕ АКТИВНОСТИ
             manager.closeDb(); // ЗАКРЫТИЕ БАЗЫ ДАННЫХ
         }
@@ -93,21 +98,22 @@ public class EditActivity extends AppCompatActivity {
 
     // ДЕЙСТВИЯ ПРИ НАЖАТИИ НА УДАЛЕНИЕ ИЗОБРАЖЕНИЯ
     public void onClickDeleteImage(View view) {
-        newImage.setImageResource(R.drawable.ic_image_default);
-        tempUri = "empty";
-        addNewImage.setVisibility(View.GONE);
-        fbAddImage.setVisibility(View.VISIBLE);
+        newImage.setImageResource(R.drawable.ic_image_default); // УСТАНОВКА ФОНОВОЙ КАРТИНКИ
+        tempUri = "empty"; // УСТАНОВКА ССЫЛКИ НА КАРТИНКУ ПУСТО
+        addNewImage.setVisibility(View.GONE); // УСТАНОВКА ПОКАЗА СПРЯТАН
+        fbAddImage.setVisibility(View.VISIBLE); // УСТАНОВКА ПОКАЗА ПОКАЗАНО
     }
 
     // ДЕЙСТВИЯ ПРИ НАЖАТИИ НА ДОБАВЛЕНИЕ НОВОЙ КАРТИНКИ
     public void onClickAddNewImage(View view) {
-        addNewImage.setVisibility(View.VISIBLE);
-        view.setVisibility(View.GONE);
+        addNewImage.setVisibility(View.VISIBLE); // ПОКАЗАТЬ ИЗОБРАЖЕНИЕ
+        view.setVisibility(View.GONE); // СКРЫТЬ ИЗОБРАЖЕНИЕ
     }
 
+    // ДЕЙСТВИЯ ПРИ НАЖАТИИ НА ВЫБОР КАРТИНКИ
     public void onClickChooseImage(View view) {
         Intent intentChooseImage = new Intent(Intent.ACTION_PICK);
-        intentChooseImage.setType("image/*");
+        intentChooseImage.setType("image/*"); // ТИП ФАЙЛА ТОЛЬКО КАРТИНКИ
         startActivityForResult(intentChooseImage, PICK_IMAGE_CODE);
     }
 

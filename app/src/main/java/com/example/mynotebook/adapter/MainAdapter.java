@@ -22,7 +22,6 @@ import java.util.List;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> {
     private Context context;
-
     private List<ListNote> mainArray;
 
     public MainAdapter(Context context) {

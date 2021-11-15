@@ -24,6 +24,7 @@ public class Manager {
         database = helper.getReadableDatabase();
     }
 
+    //ВСТАВКА В БАЗУ ДАННЫХ ЗНАЧЕНИЙ
     public void insertToDb(String title, String description, String uri) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(Constants.TITLE, title);
@@ -32,21 +33,22 @@ public class Manager {
         database.insert(Constants.TABLE_NAME, null, contentValues);
     }
 
-    public List<ListNote> getFromDbTitle() {
+    public List<ListNote> getFromDbTitle(String searchText) {
         List<ListNote> listTitle = new ArrayList<>();
-        Cursor cursor = database.query(Constants.TABLE_NAME, null, null,
-                null, null, null, null);
+        String selection = Constants.TITLE + " like ?"; // КОМАНДА ДЛЯ БД
+        Cursor cursor = database.query(Constants.TABLE_NAME, null, selection,
+                new String[]{"%" + searchText + "%"}, null, null, null); // ПОИСК ПО ЗАГОЛОВКУ
         while (cursor.moveToNext()) {
             ListNote note = new ListNote();
-            String title = cursor.getString(cursor.getColumnIndex(Constants.TITLE));
-            String desc = cursor.getString(cursor.getColumnIndex(Constants.DESCRIPTION));
-            String uri = cursor.getString(cursor.getColumnIndex(Constants.URI));
-            note.setTitle(title);
-            note.setDescription(desc);
-            note.setUri(uri);
-            listTitle.add(note);
+            String title = cursor.getString(cursor.getColumnIndex(Constants.TITLE));// ПОЛУЧЕНИЕ ЗАГОЛОВКА
+            String desc = cursor.getString(cursor.getColumnIndex(Constants.DESCRIPTION));// ПОЛУЧЕНИЕ ОПИСАНИЯ
+            String uri = cursor.getString(cursor.getColumnIndex(Constants.URI));// ПОЛУЧЕНИЯ ССЫЛКИ КАРТИНКИ
+            note.setTitle(title); // ЗАДАЕМ ЗАГОЛОВОК
+            note.setDescription(desc); // ЗАДАЕМ ОПИСАНИЕ
+            note.setUri(uri); // ЗАДАЕМ ССЫЛКУ НА КАРТИНКУ
+            listTitle.add(note); // ДОБАВЛЯЕМ ВСЕ ДАННЫЕ В СПИСОК ВСЕХ ДАННЫХ
         }
-        cursor.close();
+        cursor.close(); // ЗАКРЫВАЕМ ДОСТУП К БД
         return listTitle;
     }
 

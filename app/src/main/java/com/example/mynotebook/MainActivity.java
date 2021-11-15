@@ -6,8 +6,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.mynotebook.adapter.MainAdapter;
@@ -30,6 +33,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.id_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mainAdapter.updateAdapter(manager.getFromDbTitle(newText));
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
     private void init() {
         manager = new Manager(this);
         editTitle = findViewById(R.id.Title);
@@ -46,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         manager.openDb();
-        mainAdapter.updateAdapter(manager.getFromDbTitle());
+        mainAdapter.updateAdapter(manager.getFromDbTitle(""));
     }
 
     // ДЕЙСТВИЯ КНОПКИ СОЗДАНИЯ НОВОЙ ЗАПИСИ
@@ -61,4 +84,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         manager.closeDb(); // ЗАКРЫТЬ БАЗУ ДАННЫХ
     }
+
+
 }
