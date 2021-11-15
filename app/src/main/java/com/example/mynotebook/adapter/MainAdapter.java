@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mynotebook.EditActivity;
 import com.example.mynotebook.R;
 import com.example.mynotebook.dataBase.Constants;
+import com.example.mynotebook.dataBase.Manager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,5 +78,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> 
         mainArray.clear();
         mainArray.addAll(newList);
         notifyDataSetChanged();
+    }
+
+    public void removeItem(int position, Manager dbManager){
+        dbManager.deleteFromDb(mainArray.get(position).getId());
+        mainArray.remove(position);
+        notifyItemRangeChanged(0, mainArray.size());
+        notifyItemRemoved(position);
     }
 }

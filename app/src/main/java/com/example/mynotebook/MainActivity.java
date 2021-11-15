@@ -1,11 +1,14 @@
 package com.example.mynotebook;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rcView);
         mainAdapter = new MainAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        getItemTouchHelper().attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(mainAdapter);
     }
 
@@ -85,5 +89,18 @@ public class MainActivity extends AppCompatActivity {
         manager.closeDb(); // ЗАКРЫТЬ БАЗУ ДАННЫХ
     }
 
+    private ItemTouchHelper getItemTouchHelper(){
+        return new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                mainAdapter.removeItem(viewHolder.getAdapterPosition(), manager);
+            }
+        });
+    }
 
 }

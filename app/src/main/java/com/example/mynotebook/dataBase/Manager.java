@@ -33,6 +33,11 @@ public class Manager {
         database.insert(Constants.TABLE_NAME, null, contentValues);
     }
 
+    public void deleteFromDb(int id){
+        String selection = Constants._ID + "=" + id; // СОЗДАНИЕ ЗАПРОСА НА УДАЛЕНИЕ
+        database.delete(Constants.TABLE_NAME, selection, null); // УДАЛЕНИЕ ИЗ БАЗЫ ПО ID
+    }
+
     public List<ListNote> getFromDbTitle(String searchText) {
         List<ListNote> listTitle = new ArrayList<>();
         String selection = Constants.TITLE + " like ?"; // КОМАНДА ДЛЯ БД
@@ -40,12 +45,14 @@ public class Manager {
                 new String[]{"%" + searchText + "%"}, null, null, null); // ПОИСК ПО ЗАГОЛОВКУ
         while (cursor.moveToNext()) {
             ListNote note = new ListNote();
+            int _id = cursor.getInt(cursor.getColumnIndex(Constants._ID));// ПОЛУЧЕНИЯ id
             String title = cursor.getString(cursor.getColumnIndex(Constants.TITLE));// ПОЛУЧЕНИЕ ЗАГОЛОВКА
             String desc = cursor.getString(cursor.getColumnIndex(Constants.DESCRIPTION));// ПОЛУЧЕНИЕ ОПИСАНИЯ
             String uri = cursor.getString(cursor.getColumnIndex(Constants.URI));// ПОЛУЧЕНИЯ ССЫЛКИ КАРТИНКИ
             note.setTitle(title); // ЗАДАЕМ ЗАГОЛОВОК
             note.setDescription(desc); // ЗАДАЕМ ОПИСАНИЕ
             note.setUri(uri); // ЗАДАЕМ ССЫЛКУ НА КАРТИНКУ
+            note.setId(_id); // ЗАДАЕМ ID
             listTitle.add(note); // ДОБАВЛЯЕМ ВСЕ ДАННЫЕ В СПИСОК ВСЕХ ДАННЫХ
         }
         cursor.close(); // ЗАКРЫВАЕМ ДОСТУП К БД

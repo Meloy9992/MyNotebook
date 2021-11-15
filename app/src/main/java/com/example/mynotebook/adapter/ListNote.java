@@ -7,6 +7,16 @@ public class ListNote implements Serializable {
     private String description;
     private String uri;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    private int id = 0;
+
     public String getTitle() {
         return title;
     }
