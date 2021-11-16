@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class ListNote implements Serializable {
     private String title;
     private String description;
-    private String uri;
+    private String uri = "empty";
 
     public int getId() {
         return id;

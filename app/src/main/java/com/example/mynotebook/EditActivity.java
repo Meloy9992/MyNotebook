@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -28,8 +29,9 @@ public class EditActivity extends AppCompatActivity {
     private ConstraintLayout addNewImage;
     private FloatingActionButton fbAddImage;
     private String tempUri = "empty";
-    private boolean isEditState = true;
-    //private ImageButton imEditImage, imDeleteImage;
+    private boolean isEditState = false;
+    private ImageButton imEditImage, imDeleteImage;
+    private ListNote item;
 
     // ПРИ СОЗДАНИИ АКТИВНОСТИ
     @Override
@@ -54,6 +56,8 @@ public class EditActivity extends AppCompatActivity {
         newImage = findViewById(R.id.newImage);
         fbAddImage = findViewById(R.id.AddImage);
         addNewImage = findViewById(R.id.conteinerAddImage);
+        imEditImage = findViewById(R.id.imEdit);
+        imDeleteImage = findViewById(R.id.imDelete);
         manager = new Manager(this);
     }
 
@@ -61,12 +65,20 @@ public class EditActivity extends AppCompatActivity {
     private void getMyIntent() {
         Intent intent = getIntent();
         if (intent != null) {
-            ListNote item = (ListNote) intent.getSerializableExtra(Constants.LIST_ITEM_INTENT);
+            item = (ListNote) intent.getSerializableExtra(Constants.LIST_ITEM_INTENT);
             isEditState = intent.getBooleanExtra(Constants.EDIT_STATE, true);
 
             if (!isEditState){
                 editTitle.setText(item.getTitle()); // ЗАДАТЬ ЗАГОЛОВОК
                 editDescription.setText(item.getDescription()); // ЗАДАТЬ ОПИСАНИЕ
+                if (!item.getUri().equals("empty")){
+                    tempUri = item.getUri();
+                    addNewImage.setVisibility(View.VISIBLE);
+                    newImage.setImageURI(Uri.parse(item.getUri()));
+                    imDeleteImage.setVisibility(View.GONE);
+                    imEditImage.setVisibility(View.GONE);
+                    
+                }
             }
         }
     }
@@ -79,6 +91,7 @@ public class EditActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_CODE && data != null) {
             tempUri = data.getData().toString();
             newImage.setImageURI(data.getData());
+            getContentResolver().takePersistableUriPermission(data.getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
     }
 
@@ -89,11 +102,17 @@ public class EditActivity extends AppCompatActivity {
         if (title.equals("") || description.equals("")) { // ПРОВЕРКА НА ПУСТЫЕ СТРОКИ
             Toast.makeText(this, R.string.EmptyTitleOrDescription, Toast.LENGTH_SHORT).show(); // УВЕДОМЛЕНИЕ НА ЭКРАНЕ
         } else {
-            manager.insertToDb(title, description, tempUri); // ВСТАВЛЯЕМ В БАЗУ ДАННЫХ ЗАГОЛОВОК И ОПИСАНИЕ
-            Toast.makeText(this, R.string.Saved, Toast.LENGTH_SHORT).show(); // УВЕДОМЛЕНИЕ НА ЭКРАНЕ
-            finish(); //ЗАКРЫТИЕ АКТИВНОСТИ
+            if (isEditState) {
+                manager.insertToDb(title, description, tempUri); // ВСТАВЛЯЕМ В БАЗУ ДАННЫХ ЗАГОЛОВОК И ОПИСАНИЕ
+                Toast.makeText(this, R.string.Saved, Toast.LENGTH_SHORT).show(); // УВЕДОМЛЕНИЕ НА ЭКРАНЕ
+             } else {
+                manager.updateFromDb(title, description, tempUri, item.getId()); // ВСТАВЛЯЕМ В БАЗУ ДАННЫХ ЗАГОЛОВОК И ОПИСАНИЕ
+                Toast.makeText(this, R.string.Saved, Toast.LENGTH_SHORT).show(); // УВЕДОМЛЕНИЕ НА ЭКРАНЕ
+
+            }
             manager.closeDb(); // ЗАКРЫТИЕ БАЗЫ ДАННЫХ
-        }
+            finish(); //ЗАКРЫТИЕ АКТИВНОСТИ
+            }
     }
 
     // ДЕЙСТВИЯ ПРИ НАЖАТИИ НА УДАЛЕНИЕ ИЗОБРАЖЕНИЯ
@@ -112,7 +131,7 @@ public class EditActivity extends AppCompatActivity {
 
     // ДЕЙСТВИЯ ПРИ НАЖАТИИ НА ВЫБОР КАРТИНКИ
     public void onClickChooseImage(View view) {
-        Intent intentChooseImage = new Intent(Intent.ACTION_PICK);
+        Intent intentChooseImage = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intentChooseImage.setType("image/*"); // ТИП ФАЙЛА ТОЛЬКО КАРТИНКИ
         startActivityForResult(intentChooseImage, PICK_IMAGE_CODE);
     }

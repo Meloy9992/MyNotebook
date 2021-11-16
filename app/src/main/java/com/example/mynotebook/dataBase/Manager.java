@@ -33,6 +33,14 @@ public class Manager {
         database.insert(Constants.TABLE_NAME, null, contentValues);
     }
 
+    public void updateFromDb(String title, String description, String uri, int id){
+        String selection = Constants._ID + "=" + id; // СОЗДАНИЕ ЗАПРОСА НА УДАЛЕНИЕ
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Constants.TITLE, title);
+        contentValues.put(Constants.DESCRIPTION, description);
+        contentValues.put(Constants.URI, uri);
+        database.update(Constants.TABLE_NAME, contentValues, selection, null); // УДАЛЕНИЕ ИЗ БАЗЫ ПО ID
+    }
     public void deleteFromDb(int id){
         String selection = Constants._ID + "=" + id; // СОЗДАНИЕ ЗАПРОСА НА УДАЛЕНИЕ
         database.delete(Constants.TABLE_NAME, selection, null); // УДАЛЕНИЕ ИЗ БАЗЫ ПО ID
