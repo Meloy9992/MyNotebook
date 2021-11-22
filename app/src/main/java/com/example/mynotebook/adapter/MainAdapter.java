@@ -60,30 +60,32 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyViewHolder> 
             textViewTitle = itemView.findViewById(R.id.tvTitle);
             itemView.setOnClickListener(this);
         }
-
+        // УСТАНОВКА ТЕКСТА ЗАГОЛОВКА НА ЭКРАНЕ
         public void setData(String title) {
             textViewTitle.setText(title);
         }
 
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(context, EditActivity.class);
-            intent.putExtra(Constants.LIST_ITEM_INTENT, mainArray.get(getAdapterPosition()));
-            intent.putExtra(Constants.EDIT_STATE, false);
-            context.startActivity(intent);
+            Intent intent = new Intent(context, EditActivity.class); // НОВОЕ НАМЕРЕНИЕ
+            intent.putExtra(Constants.LIST_ITEM_INTENT, mainArray.get(getAdapterPosition())); // ПОЛОЖИТЬ ДАННЫЕ В ЭЛЕМЕНТ СПИСКА
+            intent.putExtra(Constants.EDIT_STATE, false); //
+            context.startActivity(intent); // ЗАПУСК АКТИВНОСТИ
         }
     }
 
+    // ОБНОВЛЕНИЕ СПИСКА
     public void updateAdapter(List<ListNote> newList) {
-        mainArray.clear();
-        mainArray.addAll(newList);
-        notifyDataSetChanged();
+        mainArray.clear(); // УДАЛЕНИЕ ВСЕХ ЭЛЕМЕНТОВ В СПИСКЕ
+        mainArray.addAll(newList); // ДОБАВЛЕНИЕ НОВЫХ ЭЛЕМЕНТОВ В СПИСОК
+        notifyDataSetChanged(); // ОБНОВЛЕНИЕ
     }
 
+    // УДАЛЕНИЕ ЭЛЕМЕНТА
     public void removeItem(int position, Manager dbManager){
-        dbManager.deleteFromDb(mainArray.get(position).getId());
-        mainArray.remove(position);
-        notifyItemRangeChanged(0, mainArray.size());
-        notifyItemRemoved(position);
+        dbManager.deleteFromDb(mainArray.get(position).getId()); //УДАЛИТЬ ИЗ БАЗЫ ДАНННЫХ ПО ID
+        mainArray.remove(position); // УДАЛИТЬ ИЗ МАССИВА
+        notifyItemRangeChanged(0, mainArray.size()); // ОБНОВЛЕНИЕ АДАПТЕРА И ПЕРЕЗАГРУЗКА recyclerView
+        notifyItemRemoved(position); // УДАЛЕНИЕ ЭЛЕМЕНТА ПО ПОЗИЦИИ
     }
 }
